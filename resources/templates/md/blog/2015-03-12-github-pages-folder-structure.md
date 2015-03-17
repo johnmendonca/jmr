@@ -1,0 +1,18 @@
+{:title "A Static Site Folder Structure for Github Pages"
+ :layout :post
+ :tags  ["github pages" "static site"]}
+
+ <h3>Hosting on Github Pages</h3><p>Github Pages is a service that will webhost files that you commit to specific git repos. You can publish a static website simply by pushing html, css, and js files to a git repository. For git users this can be more convenient than uploading files to a standard web host or service like S3.</p><p>This makes a perfect pair with a static site generator. In this article I outline a method to keep your entire static site project in one git repository. </p><h3>How Github Pages Works</h3><p>Github Pages has two types of repositories. A User/Organization pages repository must be named <code>username.github.io</code>. This project will publish the contents of branch <code>master</code> as a static site. Create a git repository in the output directory and <code>git push origin master</code> to deploy your site.</p><p>A Project pages repository is generally more useful. In this type, the static site is published from the branch <code>gh-pages</code>. This leaves <code>master</code> free for the code of a software project. In our case we will store the source files of our website in <code>master</code>. We can keep the source and output in separate branches, without having to change the project's folder structure.</p><p>More info about Pages repositories: <a href="https://help.github.com/articles/user-organization-and-project-pages/">User, Organization, and Project Pages</a></p><h3>Setting Up The Project</h3><p>A static site generator will usually have a certain folder structure for a project, with the generated output in one subdirectory. We want our branch <code>gh-pages</code> to be in the output subdirectory. Our <code>master</code> branch will be at the root of the project. We can use <code>.gitignore</code> to nest one instance of the repository within the other.</p><p>Here is a step-by-step process:</p>
+<ol>
+  <li>Create a local project using your site generator of choice</li>
+  <li><code>git init</code> a repository inside the project and push to a remote repository on Github</li>
+  <li><p>Create or edit your <code>.gitignore</code> file and add the output directory of your project.</p><p>At this point, change and build your site. Do a <code>git status</code>. You should only see changes to the source files, and not for the output folder.</p></li>
+  <li><p>Go ahead and delete that output folder</p></li>
+  <li><p>Now clone your project from Github, into the place where the output folder just was. Rename it to match the original folder name. You can do this all at once using: <code>git clone &lt;git-url&gt; &lt;folder-name&gt;</code></p><p>Now we have have two copies of the repo, with one nested within the other. The outer project is blissfully ignorant of the inner thanks to <code>.gitignore</code>.</p></li>
+  <li><p>Move into the inner repository. It should contain project source which we want to remove.</p></li>
+  <li>Create the new branch: <code>git checkout -b gh-pages</code></li>
+  <li>Make sure the current branch is <code>gh-pages</code>. Then use <code>git rm</code> to remove the entire contents of the folder.</li>
+  <li><p>Build your site. The inner gh-pages repository should now contain the static site files you wish to deploy.<br/> 10.<code>git add</code> the files, <code>git commit</code>, and finally <code>git push origin gh-pages</code>.</p><p>Your site should now be published on Github Pages. </p></li>
+  <li><p>For the outer repository, you will commit and push to <code>master</code> any changes to the source files.</p></li>
+  <li>Commit and push to <code>gh-pages</code> from within the output subdirectory.</li>
+</ol>
